@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="DVPoll">
+
+<title>DVPoll | A Secure and Anonymous Online Polling Platform Designed for Christian Communities & Secular Organizations</title>
+  
+  <meta name="description" content="High-performance polling and digital solutions engineered for global ministries, secular organizations, and corporate enterprises.">
+  <meta name="keywords" content="dvpoll, progressive web app, polling platform, digital ministry, enterprise solutions, survey app">
+  <meta name="author" content="Rev. Don Victor, PhD">
+  <meta name="robots" content="index, follow">
+
+  <link rel="icon" type="image/png" href="https://i.ibb.co/4Z2LF3Ws/Screenshot-20260423-145600.png">
+  <link rel="apple-touch-icon" href="https://i.ibb.co/4Z2LF3Ws/Screenshot-20260423-145600.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DVPoll">
+  <meta property="og:url" content="https://dvpoll.donvictorministry.org.ng">
+  <meta property="og:title" content="DVPoll | Global Polling Architecture">
+  <meta property="og:description" content="DVPoll is a secure and anonymous online polling platform designed for Christian communities. It fosters honest conversations about faith, personal struggles, and spiritual growth without fear of being identified.">
+  
+  <meta property="og:image" content="https://i.ibb.co/DHCdFtmF/Screenshot-20260423-150210.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DVPoll Application Preview">
+  
+</head>
+ 
+<style>
+    :root {
+      --royal:#1A3A8F; --royal-dark:#122970; --royal-light:#2B52C8;
+      --gold:#B8860B; --gold-light:#DAA520; --gold-bright:#F5C518;
+      --off-white:#F8F9FC; --text-main:#0D0D0D; --text-sub:#444455;
+      --text-muted:#7777AA; --border:rgba(26,58,143,0.18); --card-bg:#FFFFFF;
+      --app-bg:#F4F6FC; --overlay-bg:rgba(10,18,50,0.72);
+      --shadow:0 4px 24px rgba(26,58,143,0.13); --shadow-sm:0 2px 8px rgba(26,58,143,0.09);
+      --radius-lg:24px; --radius-md:16px; --radius-sm:12px; --radius-pill:56px;
+      --touch:56px; --font:'Roboto',system-ui,-apple-system,sans-serif;
+      --transition:all 0.2s cubic-bezier(0.2,0,0,1);
+    }
+    [data-theme="dark"] {
+      --off-white:#12162A; --text-main:#F0F2FF; --text-sub:#AABBDD;
+      --text-muted:#7788AA; --border:rgba(90,130,220,0.2); --card-bg:#1E2440;
+      --app-bg:#12162A; --overlay-bg:rgba(0,0,0,0.85);
+      --shadow:0 4px 24px rgba(0,0,0,0.4); --shadow-sm:0 2px 8px rgba(0,0,0,0.3);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%;overflow-x:hidden}
+    body{font-family:var(--font);background:var(--app-bg);color:var(--text-main);min-height:100vh;display:flex;justify-content:center;-webkit-tap-highlight-color:transparent}
+    .app-wrap{width:100%;max-width:480px;min-height:100vh;background:var(--app-bg);display:flex;flex-direction:column;position:relative}
+    @media(min-width:481px){.app-wrap{box-shadow:0 0 48px rgba(0,0,0,0.15)}}
+
+    /* SIDEBAR */
+    .sidebar-overlay{position:fixed;inset:0;background:var(--overlay-bg);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}
+    .sidebar-overlay.open{opacity:1;pointer-events:all}
+    .sidebar{position:fixed;top:0;left:-288px;width:288px;height:100%;background:var(--card-bg);z-index:301;transition:left .28s cubic-bezier(0.2,0,0,1);display:flex;flex-direction:column;box-shadow:4px 0 32px rgba(0,0,0,0.18)}
+    .sidebar.open{left:0}
+    .sidebar-header{background:var(--royal);padding:48px 16px 20px;display:flex;align-items:center;gap:12px;position:relative}
+    .sidebar-close-btn{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:background .15s}
+    .sidebar-close-btn:hover{background:rgba(255,255,255,0.25)}
+    .sidebar-close-btn svg{width:18px;height:18px}
+    .sidebar-logo-wrap{width:60px;height:60px;flex-shrink:0;border-radius:50%;border:3px solid var(--gold-bright);overflow:hidden;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .sidebar-logo-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .sidebar-logo-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+    .sidebar-logo-fallback svg{width:32px;height:32px}
+    .sidebar-brand{color:#fff;flex:1;min-width:0}
+    .sidebar-brand strong{font-size:20px;font-weight:700;display:block}
+    .sidebar-brand span{font-size:12px;opacity:.75}
+    .sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
+    /* ↓ SIDEBAR MENU ITEM TEXT SIZE — change font-size here to resize sidebar labels */
+    .sidebar-item{display:flex;align-items:center;gap:16px;padding:0 20px;height:var(--touch);cursor:pointer;color:var(--text-main);font-size:17px;font-weight:500;border-left:3px solid transparent;transition:var(--transition)}
+    .sidebar-item:hover,.sidebar-item:active{background:rgba(26,58,143,0.07);border-left-color:var(--royal);color:var(--royal)}
+    .sidebar-item svg{width:22px;height:22px;flex-shrink:0}
+    .sidebar-divider{height:1px;background:var(--border);margin:8px 20px}
+    .theme-toggle-row{display:flex;align-items:center;padding:12px 20px;gap:12px;border-top:1px solid var(--border)}
+    /* ↓ THEME TOGGLE LABEL SIZE — change font-size here */
+    .theme-toggle-row span{flex:1;font-size:17px;font-weight:700;color:var(--text-sub)}
+    .toggle-switch{width:52px;height:28px;background:var(--border);border-radius:14px;position:relative;cursor:pointer;transition:background .2s;border:none}
+    .toggle-switch.on{background:var(--royal)}
+    .toggle-knob{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);transition:transform .2s}
+    .toggle-switch.on .toggle-knob{transform:translateX(24px)}
+
+    /* TOP BAR */
+    .top-bar{background:var(--royal);padding:0 8px;height:60px;display:flex;align-items:center;gap:4px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.18)}
+    .icon-btn{width:var(--touch);height:var(--touch);border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:background .15s}
+    .icon-btn:hover,.icon-btn:active{background:rgba(255,255,255,0.15)}
+    .icon-btn svg{width:24px;height:24px}
+    .top-bar-title{flex:1;display:flex;align-items:center;gap:8px;color:#fff;font-size:22px;font-weight:700;letter-spacing:.5px}
+    .top-bar-title svg{width:28px;height:28px}
+    .top-bar-badge{background:var(--gold-bright);color:var(--royal-dark);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px}
+    .top-actions{display:flex}
+
+    /* TABS */
+    .screen-tabs{display:flex;background:var(--royal-dark);border-bottom:2px solid var(--gold)}
+    /* ↓ SCREEN TAB LABEL SIZE — change font-size here */
+    .screen-tab{flex:1;border:none;background:transparent;padding:12px 4px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;justify-content:center;gap:6px;transition:color .15s;border-bottom:3px solid transparent;margin-bottom:-2px}
+    .screen-tab svg{width:18px;height:18px}
+    .screen-tab.active{color:var(--gold-bright);border-bottom-color:var(--gold-bright)}
+    .screen{display:none;flex-direction:column;flex:1}
+    .screen.active{display:flex}
+
+    /* POLL */
+    .poll-card{background:var(--card-bg);margin:16px 12px 0;border-radius:var(--radius-lg);padding:24px 18px;border:1.5px solid var(--border);box-shadow:var(--shadow-sm)}
+    /* ↓ POLL QUESTION SIZE — change font-size here */
+    .poll-question{font-size:26px;font-weight:700;color:var(--royal);line-height:1.35;margin-bottom:20px}
+    [data-theme="dark"] .poll-question{color:var(--gold-light)}
+    .countdown-block{background:linear-gradient(135deg,rgba(26,58,143,0.08),rgba(184,134,11,0.08));border:1.5px solid var(--border);border-radius:var(--radius-md);padding:16px;margin-bottom:20px}
+    /* ↓ COUNTDOWN LABEL SIZE */
+    .countdown-lbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+    .countdown-lbl svg{width:18px;height:18px}
+    .timer-row{display:flex;justify-content:space-around;align-items:center}
+    .time-unit{text-align:center}
+    /* ↓ TIMER DIGIT SIZE */
+    .time-num{font-size:46px;font-weight:400;color:var(--royal);line-height:1;background:rgba(255,255,255,0.7);padding:6px 10px;border-radius:12px;min-width:64px;display:block;text-align:center}
+    [data-theme="dark"] .time-num{background:rgba(0,0,0,0.25);color:var(--gold-light)}
+    /* ↓ TIMER LABEL (hours/mins/secs) SIZE */
+    .time-lbl{font-size:13px;color:var(--text-muted);margin-top:4px;font-weight:600}
+    .timer-sep{font-size:38px;color:var(--gold);font-weight:300;margin-bottom:18px}
+    /* ↓ EXPIRY NOTE SIZE */
+    .expiry-note{text-align:center;margin-top:10px;font-size:15px;font-weight:600;color:var(--gold)}
+    .options-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+    .vote-option{background:var(--off-white);border:2px solid transparent;border-radius:var(--radius-md);cursor:pointer;overflow:hidden;transition:var(--transition)}
+    .vote-option.selected{border-color:var(--royal);background:rgba(26,58,143,0.05)}
+    .option-row{display:flex;align-items:center;gap:12px;padding:14px 14px 10px}
+    .radio-ring{width:22px;height:22px;border-radius:50%;border:2px solid #AAAACC;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+    .vote-option.selected .radio-ring{border-color:var(--royal)}
+    .radio-dot{width:11px;height:11px;border-radius:50%;background:var(--royal);transform:scale(0);transition:transform .15s}
+    .vote-option.selected .radio-dot{transform:scale(1)}
+    /* ↓ POLL OPTION TEXT SIZE */
+    .opt-text{flex:1;font-size:19px;font-weight:500;color:var(--text-main)}
+    /* ↓ POLL OPTION PERCENTAGE SIZE */
+    .opt-pct{font-size:17px;font-weight:700;color:var(--gold)}
+    .prog-bar{height:6px;background:var(--border)}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--royal),var(--royal-light));transition:width .4s}
+    /* ↓ VOTE BUTTON TEXT SIZE */
+    .vote-btn{width:100%;height:var(--touch);border:none;border-radius:var(--radius-pill);background:linear-gradient(135deg,var(--royal),var(--royal-light));color:#fff;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-bottom:16px;box-shadow:0 4px 16px rgba(26,58,143,0.3);transition:var(--transition)}
+    .vote-btn:disabled{background:var(--border);color:var(--text-muted);box-shadow:none;cursor:not-allowed}
+    .vote-btn svg{width:22px;height:22px}
+    .vote-btn .btn-spinner{width:22px;height:22px;border:3px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+    .poll-meta{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)}
+    /* ↓ VOTE COUNT TEXT SIZE */
+    .votes-count{display:flex;align-items:center;gap:6px;font-size:16px;color:var(--text-sub)}
+    .votes-count svg{width:20px;height:20px}
+    /* ↓ ANONYMOUS BADGE TEXT SIZE */
+    .anon-chip{display:flex;align-items:center;gap:5px;background:rgba(26,58,143,0.08);padding:6px 14px;border-radius:20px;font-size:16px;font-weight:600;color:var(--royal)}
+    [data-theme="dark"] .anon-chip{color:var(--gold-light);background:rgba(184,134,11,0.1)}
+    .anon-chip svg{width:16px;height:16px}
+
+    /* STAR RATING */
+    .star-rating-block{margin-top:20px;padding:18px 16px 16px;background:linear-gradient(135deg,rgba(245,197,24,0.07),rgba(26,58,143,0.06));border:1.5px solid rgba(184,134,11,0.25);border-radius:var(--radius-md);text-align:center}
+    /* ↓ STAR RATING LABEL SIZE */
+    .star-rating-label{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:7px}
+    .star-rating-label svg{width:18px;height:18px}
+    .stars-row{display:flex;justify-content:center;gap:10px;margin-bottom:14px}
+    .star-btn{background:none;border:none;cursor:pointer;padding:4px;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+    .star-btn:active{transform:scale(1.2)}
+    .star-btn svg{width:44px;height:44px;transition:filter .15s}
+    .star-btn.lit svg{filter:drop-shadow(0 2px 6px rgba(245,197,24,0.6))}
+    /* ↓ STAR SUBMIT BUTTON TEXT SIZE */
+    .star-submit-btn{height:48px;padding:0 32px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#fff;border:none;border-radius:var(--radius-pill);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(184,134,11,0.3);display:inline-flex;align-items:center;gap:8px;transition:opacity .2s}
+    .star-submit-btn:disabled{opacity:.45;cursor:not-allowed}
+    .star-submit-btn .btn-spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    /* ↓ STAR FEEDBACK TEXT SIZE */
+    .star-feedback{font-size:16px;font-weight:600;margin-top:10px;color:var(--gold);min-height:22px}
+
+    /* LOADING */
+    .poll-loading{text-align:center;padding:40px 20px;color:var(--text-muted)}
+    .poll-loading .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--royal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ANNOUNCE */
+    .announce-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;min-height:60vh;text-align:center}
+    .announce-icon{margin-bottom:16px}
+    .announce-icon svg{width:64px;height:64px;opacity:.35}
+    /* ↓ ANNOUNCEMENT TITLE SIZE */
+    .announce-title{font-size:22px;font-weight:700;color:var(--royal);margin-bottom:12px}
+    /* ↓ ANNOUNCEMENT BODY TEXT SIZE */
+    .announce-text{font-size:16px;line-height:1.7;color:var(--text-sub)}
+    [data-theme="dark"] .announce-title{color:var(--gold-light)}
+
+    /* LECTURE */
+    .lecture-card{margin:16px 12px;padding:24px 18px;background:var(--card-bg);border-radius:var(--radius-lg);border:1.5px solid var(--border);box-shadow:var(--shadow-sm)}
+    /* ↓ LECTURE TITLE SIZE */
+    .lecture-title{font-size:23px;font-weight:800;line-height:1.3;margin-bottom:6px}
+    /* ↓ LECTURE AUTHOR SIZE */
+    .lecture-by{font-size:16px;font-weight:500;margin-bottom:16px;opacity:.7}
+    /* ↓ LECTURE BODY TEXT SIZE */
+    .lecture-body{font-size:17px;line-height:1.8;color:var(--text-sub)}
+    .lecture-body.clamped{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+    /* ↓ SHOW MORE/LESS BUTTON SIZE */
+    .show-more-btn{margin-top:12px;background:none;border:none;color:var(--royal);font-size:16px;font-weight:600;cursor:pointer;padding:0}
+    [data-theme="dark"] .show-more-btn{color:var(--gold-light)}
+
+    /* FOOTER */
+    .bottom-footer{margin-top:auto;background:var(--royal);display:flex;border-top:3px solid var(--gold)}
+    /* ↓ FOOTER BUTTON LABEL SIZE */
+    .footer-btn{flex:1;height:58px;border:none;background:transparent;color:rgba(255,255,255,0.75);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:background .15s,color .15s}
+    .footer-btn:hover,.footer-btn:active{background:rgba(255,255,255,0.1);color:var(--gold-bright)}
+    .footer-btn svg{width:22px;height:22px}
+
+    /* MODALS */
+    .modal-overlay{position:fixed;inset:0;background:var(--overlay-bg);z-index:500;display:none;align-items:flex-end}
+    .modal-overlay.open{display:flex}
+    .modal-sheet{width:100%;max-width:480px;margin:0 auto;height:100%;background:var(--card-bg);display:flex;flex-direction:column;animation:slideUp .28s cubic-bezier(0.2,0,0,1);overflow:hidden}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .modal-top{background:var(--royal);padding:16px;display:flex;align-items:center;gap:12px}
+    /* ↓ MODAL HEADER TITLE SIZE */
+    .modal-top-title{flex:1;color:#fff;font-size:18px;font-weight:700}
+    .modal-close{width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,0.15);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
+    .modal-close:hover{background:rgba(255,255,255,0.3)}
+    .modal-close svg{width:22px;height:22px}
+    .modal-body{flex:1;overflow-y:auto;padding:28px 20px}
+    /* ↓ MODAL SECTION LABEL SIZE (e.g. "WHO WE ARE") */
+    .modal-section-title{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:10px}
+    /* ↓ MODAL BIG HEADING SIZE */
+    .modal-heading{font-size:26px;font-weight:800;color:var(--royal);line-height:1.25;margin-bottom:8px}
+    [data-theme="dark"] .modal-heading{color:var(--gold-light)}
+    /* ↓ MODAL BODY PARAGRAPH TEXT SIZE */
+    .modal-sub{font-size:18px;line-height:1.7;color:var(--text-sub);margin-bottom:20px}
+    .modal-divider{height:1px;background:var(--border);margin:20px 0}
+    /* ↓ MODAL HIGHLIGHTED BLOCK TEXT SIZE */
+    .modal-highlight{background:rgba(26,58,143,0.06);border-left:4px solid var(--royal);padding:14px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:18px;line-height:1.65;color:var(--text-sub);margin-bottom:16px}
+    [data-theme="dark"] .modal-highlight{background:rgba(90,130,220,0.1);border-left-color:var(--gold)}
+    .modal-cta-row{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+    /* ↓ MODAL CTA BUTTON TEXT SIZE */
+    .cta-btn{display:flex;align-items:center;justify-content:center;gap:8px;height:var(--touch);min-width:var(--touch);border-radius:var(--radius-pill);border:none;cursor:pointer;font-size:14px;font-weight:700;padding:0 24px;flex:1;transition:var(--transition)}
+    .cta-btn svg{width:22px;height:22px}
+    .cta-btn.primary{background:var(--royal);color:#fff;box-shadow:0 4px 16px rgba(26,58,143,0.25)}
+    .cta-btn.primary:hover{background:var(--royal-dark)}
+    .cta-btn.green{background:#25D366;color:#fff}
+    .cta-btn.phone{background:#0F9D58;color:#fff}
+    .cta-btn.fb{background:#1877F2;color:#fff}
+    /* ↓ PRICE CARD TEXT SIZES */
+    .price-card{border:2px solid var(--border);border-radius:var(--radius-md);padding:18px;margin-bottom:14px}
+    .price-card.featured{border-color:var(--gold);background:rgba(184,134,11,0.05)}
+    .price-tag{font-size:28px;font-weight:800;color:var(--royal)}
+    [data-theme="dark"] .price-tag{color:var(--gold-light)}
+    .price-label{font-size:16px;color:var(--text-muted);margin-bottom:8px}
+    .price-desc{font-size:17px;line-height:1.6;color:var(--text-sub)}
+    .toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(20px);background:#1A1A2E;color:#fff;padding:10px 24px;border-radius:24px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .hidden{display:none!important}
+    .mt16{margin-top:16px}
+
+    /* DEVELOPER MODAL CUSTOM STYLES */
+    .dev-name{color:#1877F2}
+    .dev-role{color:#1A3A8F}
+    [data-theme="dark"] .dev-name{color:var(--gold-bright)}
+    [data-theme="dark"] .dev-role{color:#FFFFFF}
+    .stat-grid{background:var(--off-white);border:1.5px solid var(--border);box-shadow:none;border-radius:16px;padding:20px 8px}
+    .stat-item{transition:transform 0.2s cubic-bezier(0.2,0,0,1);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0 4px}
+    .stat-item:active{transform:scale(1.05)}
+    /* ↓ STAT CARD NUMBER SIZE */
+    .stat-num{color:var(--royal);font-size:24px;font-weight:900;line-height:1.2;margin:8px 0 2px}
+    /* ↓ STAT CARD LABEL SIZE */
+    .stat-label{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--text-main);letter-spacing:0.5px}
+    /* ↓ STAT CARD SUBLABEL SIZE */
+    .stat-sub{font-size:10px;font-weight:600;color:var(--text-muted);margin-top:4px;line-height:1.4}
+    [data-theme="dark"] .stat-grid{background:var(--card-bg);box-shadow:var(--shadow-sm)}
+    [data-theme="dark"] .stat-num{color:var(--gold-light)}
+    [data-theme="dark"] .stat-label{color:var(--text-main)}
+
+  </style>
+</head>
+<body>
+<!-- ===== WRITER PORTAL ===== -->
+<div class="app-wrap" id="writerPortalWrap" style="display:none;padding:24px 16px;min-height:100vh;flex-direction:column;justify-content:center;">
+  <div id="writerLoginBox" style="background:var(--card-bg);border-radius:var(--radius-lg);padding:36px 28px;width:100%;border:1.5px solid var(--border);box-shadow:var(--shadow-sm);margin:auto;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="width:64px;height:64px;background:var(--royal);border-radius:20px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;">
+        <svg viewBox="0 0 24 24" fill="#F5C518" width="36" height="36"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg>
+      </div>
+      <div style="font-size:22px;font-weight:800;color:var(--royal);">Writer Portal</div>
+      <div style="font-size:15px;color:var(--text-muted);margin-top:4px;">Chris Ministries Online · DVPoll</div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;display:block;">Email</label>
+      <input type="email" id="wEmail" placeholder="Enter your email" autocomplete="username" style="width:100%;height:52px;background:var(--off-white);border:2px solid var(--border);border-radius:12px;padding:0 16px;font-size:16px;color:var(--text-main);font-family:var(--font);">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;display:block;">One-Time Password</label>
+      <input type="password" id="wPass" placeholder="Enter password" autocomplete="current-password" style="width:100%;height:52px;background:var(--off-white);border:2px solid var(--border);border-radius:12px;padding:0 16px;font-size:16px;color:var(--text-main);font-family:var(--font);">
+    </div>
+    <button onclick="doWriterLogin()" id="wLoginBtn" style="width:100%;height:52px;background:linear-gradient(135deg,var(--royal),var(--royal-light));color:#fff;border:none;border-radius:56px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);">Sign In</button>
+    <div id="wLoginErr" class="hidden" style="color:#B00020;font-size:13px;margin-top:10px;text-align:center;"></div>
+  </div>
+  <div id="writerDashBox" style="display:none;flex-direction:column;gap:16px;margin:auto;width:100%;max-width:400px;">
+    <div id="wSuccessBanner" class="hidden" style="padding:14px 16px;background:rgba(27,122,62,0.1);border:1.5px solid rgba(27,122,62,0.25);border-radius:14px;font-size:15px;color:#1B7A3E;font-weight:600;line-height:1.6;"></div>
+    <div style="font-size:20px;font-weight:800;color:var(--royal);text-align:center;">Create New Poll</div>
+    <div style="font-size:13px;color:var(--text-muted);text-align:center;margin-top:-8px;">Poll goes live immediately after publishing.</div>
+    <input type="text" id="wQ" placeholder="Poll Question *" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--off-white);color:var(--text-main);font-size:16px;font-family:var(--font);">
+    <input type="text" id="wO1" placeholder="Option 1 *" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--off-white);color:var(--text-main);font-size:16px;font-family:var(--font);">
+    <input type="text" id="wO2" placeholder="Option 2 *" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--off-white);color:var(--text-main);font-size:16px;font-family:var(--font);">
+    <input type="text" id="wO3" placeholder="Option 3 (Optional)" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--off-white);color:var(--text-main);font-size:16px;font-family:var(--font);">
+    <input type="text" id="wO4" placeholder="Option 4 (Optional)" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--off-white);color:var(--text-main);font-size:16px;font-family:var(--font);">
+    <div style="display:flex;gap:10px;">
+      <div style="flex:1;">
+        <label style="font-size:11px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:4px;">DAYS</label>
+        <input type="number" id="wDays" value="3" min="0" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--off-white);color:var(--text-main);font-size:16px;font-family:var(--font);">
+      </div>
+      <div style="flex:1;">
+        <label style="font-size:11px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:4px;">HOURS</label>
+        <input type="number" id="wHours" value="0" min="0" max="23" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--off-white);color:var(--text-main);font-size:16px;font-family:var(--font);">
+      </div>
+    </div>
+    <button onclick="wSubmitPoll()" id="wSubmitBtn" style="width:100%;height:56px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#fff;border:none;border-radius:56px;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(184,134,11,0.3);font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg>
+      Publish Live Poll
+    </button>
+  </div>
+</div>
+<!-- ===== PUBLIC APP ===== -->
+<div class="app-wrap" id="publicAppWrap">
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <button class="sidebar-close-btn" onclick="closeSidebar()" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="sidebar-logo-wrap">
+        <img class="sidebar-logo-img" src="https://i.ibb.co/KjbzZ2vC/Screenshot-20260422-214351.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Don Victor Ministries Logo">
+        <div class="sidebar-logo-fallback" style="display:none">
+          <svg viewBox="0 0 24 24" fill="#F5C518"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg>
+        </div>
+      </div>
+      <div class="sidebar-brand"><strong>DVPoll</strong><span>Don Victor Ministries Online Community</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="sidebar-item" onclick="openModal('aboutUsModal');closeSidebar();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>About Us
+      </div>
+      <div class="sidebar-item" onclick="openModal('aboutDevModal');closeSidebar();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>About Developer
+      </div>
+      <div class="sidebar-item" onclick="openModal('aboutPollModal');closeSidebar();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>About The Poll
+      </div>
+      <div class="sidebar-item" onclick="openModal('rentModal');closeSidebar();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Rent The Poll
+      </div>
+      <div class="sidebar-item" onclick="openModal('supportModal');closeSidebar();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Support Us
+      </div>
+      <div class="sidebar-item" onclick="openModal('termsModal');closeSidebar();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Terms &amp; Ownership
+      </div>
+      <div class="sidebar-item" onclick="openModal('contactModal');closeSidebar();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Contact Us
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-item" onclick="window.open('https://www.donvictoracademy.net/','_blank');">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/></svg>View Portfolio
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-item" onclick="window.open('https://dvgame.donvictorministry.org.ng/','_blank');">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18c1.746 0 3.332.477 4.5 1.253zm0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/></svg>Bible Game
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-item" onclick="window.open('https://digitalgospel.donvictoracademy.net/','_blank');">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2"/></svg>Digital Tract
+      </div>
+    </div>
+    <div class="theme-toggle-row">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span id="themeLabel">Light Mode</span>
+      <button class="toggle-switch" id="themeToggle" onclick="toggleTheme()"><div class="toggle-knob"></div></button>
+    </div>
+  </nav>
+
+  <header class="top-bar">
+    <button class="icon-btn" onclick="openSidebar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="top-bar-title">
+      <svg viewBox="0 0 24 24" fill="#F5C518"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg>
+      DVPoll <span class="top-bar-badge">LIVE</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" onclick="sharePoll()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button class="icon-btn" id="installBtn" onclick="triggerInstall()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="screen-tabs">
+    <button class="screen-tab active" id="tab-poll" onclick="switchTab('poll')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg>Poll
+    </button>
+    <button class="screen-tab" id="tab-announce" onclick="switchTab('announce')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>Announce
+    </button>
+    <button class="screen-tab" id="tab-lecture" onclick="switchTab('lecture')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Lecture
+    </button>
+  </div>
+
+  <div class="screen active" id="screen-poll">
+    <div id="pollContent" class="poll-card"><div class="poll-loading"><div class="spinner"></div>Loading poll...</div></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="screen" id="screen-announce">
+    <div class="announce-screen" id="announceContent"><div class="poll-loading"><div class="spinner"></div>Loading...</div></div>
+  </div>
+  <div class="screen" id="screen-lecture">
+    <div id="lectureContent"><div class="lecture-card"><div class="poll-loading"><div class="spinner"></div>Loading...</div></div></div>
+  </div>
+
+  <footer class="bottom-footer">
+    <button class="footer-btn" onclick="ctaEmail()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email
+    </button>
+    <button class="footer-btn" onclick="ctaPhone()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Phone
+    </button>
+    <button class="footer-btn" onclick="ctaWhatsApp()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>WhatsApp
+    </button>
+    <button class="footer-btn" onclick="ctaFacebook()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook
+    </button>
+  </footer>
+</div>
+<!-- ===== MODALS ===== -->
+<!-- ABOUT US -->
+<div class="modal-overlay" id="aboutUsModal">
+  <div class="modal-sheet">
+    <div class="modal-top"><span class="modal-top-title">About Us</span><button class="modal-close" onclick="closeModal('aboutUsModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-body">
+      <div class="modal-section-title">Who We Are</div>
+      <div class="modal-heading">Don Victor Ministries Online Community</div>
+     <div class="modal-sub">Don Victor Ministries is a digital first evangelism network led by Rev. Don Victor, with a bold vision to reach six million souls across six continents and beyond.</div>
+      <div class="modal-divider"></div>
+      <div class="modal-highlight">Our mission is to harness the power of technology to advance the Kingdom of God, delivering discipleship tools, an interactive digital sanctuary, devotionals, Bible education, and community building platforms designed for the modern believer. We are committed to meeting people where they are and guiding them into a deeper, transformative relationship with Christ.</div>
+      <div class="modal-section-title mt16">Our Vision</div>
+      <div class="modal-sub">We believe every soul matters. Through DVPoll, we create safe and anonymous spaces where believers can openly express their spiritual journeys and engage with authenticity within their faith community.</div> 
+      <div class="modal-highlight">Rooted in the conviction that honesty nurtures growth, our platform inspires conversations that heal, challenge, and ignite transformation, shaping lives and impacting society across the world.</div>
+      <div class="modal-section-title mt16">Get In Touch</div>
+      <div class="modal-cta-row">
+        <button class="cta-btn primary" onclick="ctaEmail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email Us</button>
+        <button class="cta-btn green" onclick="ctaWhatsApp()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT THE POLL — FIXED: all div tags properly closed -->
+<div class="modal-overlay" id="aboutPollModal">
+  <div class="modal-sheet">
+    <div class="modal-top"><span class="modal-top-title">About The Poll</span><button class="modal-close" onclick="closeModal('aboutPollModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-body">
+      <div class="modal-section-title">What Is DVPoll?</div>
+      <div class="modal-heading">Anonymous Polling Platform</div>
+      <div class="modal-sub">DVPoll is a secure and anonymous online polling platform designed for Christian communities. It fosters honest conversations about faith, personal struggles, and spiritual growth without fear of being identified.</div>
+      <div class="modal-divider"></div>
+      <div class="modal-highlight">Every vote is completely anonymous. We do not collect your name, social media details, or any personally identifiable information. All responses are compiled as collective community insights.</div>
+      <div class="modal-section-title mt16">Key Features</div>
+      <div class="modal-sub">· Real-time live vote counts<br>· Countdown timer for fairness<br>· One-tap sharing<br>· Installable PWA — works offline<br>· Poll, Announcement &amp; Lecture screens.</div>
+      <div class="modal-highlight">Developed by God's servant, Rev. Don Victor, PhD, a soul winner, trainer, and skilled software developer, with a mission to present Christianity and Christian education in a way that resonates globally and fosters broad biblical acceptance.</div>
+      <div class="modal-section-title mt16">Privacy Promise</div>
+      <div class="modal-highlight">DVPoll collects anonymous usage data to improve the user experience and never your identity.</div>
+      <div class="modal-cta-row">
+        <button class="cta-btn primary" onclick="ctaEmail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email Us</button>
+        <button class="cta-btn green" onclick="ctaWhatsApp()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RENT THE POLL -->
+<div class="modal-overlay" id="rentModal">
+  <div class="modal-sheet">
+    <div class="modal-top"><span class="modal-top-title">Rent The Poll</span><button class="modal-close" onclick="closeModal('rentModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-body">
+      <div class="modal-section-title">Grow Your Community</div>
+      <div class="modal-heading">Get Your Own DVPoll — Affordable &amp; Fast</div>
+      <div class="modal-sub">Want to run anonymous polls for your church, school, NGO, or business? Rent DVPoll or let us build you a custom version at a price that fits any budget.</div>
+      <div class="modal-divider"></div>
+      
+      <div class="price-card featured"><div class="price-tag">From $50</div><div class="price-label">One-time setup.</div><div class="price-desc">Get your branded DVPoll with custom colors, logo, questions, and backend logic. Delivered within 48 hours to 1 week.</div></div>
+      <div class="price-card"><div class="price-tag">From $100</div><div class="price-label">Custom development.</div><div class="price-desc">Advanced features, unique interface, and scalable functionality built to your exact needs.</div></div>
+      <div class="modal-highlight">All builds include: mobile-first PWA, secure backend, easy control panel, dark and light mode, and ownership.</div>
+
+     <div class="modal-section-title mt16">Start now and engage your audience with confidence.</div>
+      <div class="modal-cta-row">
+        <button class="cta-btn phone" onclick="ctaPhone()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call Us</button>
+        <button class="cta-btn green" onclick="ctaWhatsApp()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>WhatsApp Us</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORT US -->
+<div class="modal-overlay" id="supportModal">
+  <div class="modal-sheet">
+    <div class="modal-top"><span class="modal-top-title">Support Us</span><button class="modal-close" onclick="closeModal('supportModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-body">
+      <div class="modal-section-title">Partner With Us</div>
+      <div class="modal-heading">Be Part of the Don Victor Ministries 6,000,000 Souls Winning Campaign</div>
+      <div class="modal-sub">This mission moves forward because of people like you. Every prayer, every gift, and every act of service helps carry the gospel to those who have not yet heard.</div>
+      <div class="modal-divider"></div>
+      <div class="modal-highlight">Your support ensures that DVPoll remains freely available while enabling outreach to underserved communities. No seed is wasted. Each one contributes to eternal impact.</div>
+      <div class="modal-section-title mt16">Ways to Support</div>
+      <div class="modal-sub">🙏 <strong>Prayer</strong> — Stand with us consistently in prayer as we pursue this vision.<br><br>💰 <strong>Financial Giving</strong> — Help fund campaigns that bring hope and salvation to many.<br><br>🛠️ <strong>Skills Partnership</strong> — Volunteer your professional skills<br><br>📢 <strong>Spread the Word</strong> — Share our polls and invite others to be part of this mission.</div>
+       <div class="modal-highlight">"And let us not grow weary of doing good, for in due season we will reap, if we do not give up." Galatians 6:9.</div>
+      <div class="modal-cta-row">
+        <button class="cta-btn primary" onclick="ctaEmail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email Us</button>
+        <button class="cta-btn green" onclick="ctaWhatsApp()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT US -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-sheet">
+    <div class="modal-top"><span class="modal-top-title">Contact Us</span><button class="modal-close" onclick="closeModal('contactModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-body">
+      <div class="modal-section-title">Reach Out</div>
+      <div class="modal-heading">We'd Love to Hear From You</div>
+      <div class="modal-sub">Whether you have questions about DVPoll, want to partner with us, or simply need prayer — our doors are open.</div>
+      <div class="modal-divider"></div>
+      <div class="modal-highlight">
+        <strong>Don Victor Ministries Online Community</strong><br>
+        Rev. Don Victor, PhD
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+          <a href="mailto:donvictorministry@gmail.com" style="color:var(--royal);font-weight:700;text-decoration:none;display:inline-block;">📧 Send an Email</a>
+          <a href="tel:+2347035794649" style="color:var(--royal);font-weight:700;text-decoration:none;display:inline-block;">📞 Call Helpline</a>
+          <a href="https://www.donvictoracademy.net" target="_blank" style="color:var(--royal);font-weight:700;text-decoration:none;display:inline-block;">🌐 Visit Our Website</a>
+        </div>
+      </div>
+      <div class="modal-section-title mt16">Connect With Us</div>
+      <div class="modal-cta-row">
+        <button class="cta-btn primary" onclick="ctaEmail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email</button>
+        <button class="cta-btn phone" onclick="ctaPhone()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</button>
+        <button class="cta-btn green" onclick="ctaWhatsApp()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>WhatsApp</button>
+        <button class="cta-btn fb" onclick="ctaFacebook()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TERMS & OWNERSHIP — FIXED: now uses .modal-overlay class so openModal() works correctly -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal-sheet">
+    <div class="modal-top">
+      <span class="modal-top-title">Terms of Use &amp; Privacy Policy</span>
+      <button class="modal-close" onclick="closeModal('termsModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="24" height="24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section-title">Terms of Use &amp; Ownership</div>
+      <div class="modal-heading">Intellectual Property &amp; Ownership</div>
+      <div class="modal-highlight">DVPoll is created, owned, and operated by its developer, Rev. Don Victor, PhD. The DVPoll application architecture, UI/UX design, source code, backend logic, and PWA framework are his exclusive intellectual property. All content, design, and functionality within the App are proprietary and protected by applicable intellectual property laws. You may not copy, modify, reverse engineer, or misuse any part of the App without written permission. By accessing, using, or renting the DVPoll platform, you agree to the following terms and acknowledge the strict intellectual property rights of the developer.</div>
+      <div class="modal-sub">
+        <span style="display:block;margin-bottom:8px;">I. Rented Platforms: Clients renting DVPoll are granted a limited, non exclusive license to use the software for their community. The core underlying codebase remains the strict property of the developer.</span>
+        <span style="display:block;">II. Custom Builds: Clients purchasing custom builds receive lifetime usage rights to their specific deployed app but are strictly prohibited from reselling, duplicating, or redistributing the core DVPoll framework without explicit written permission and documentation.</span>
+      </div>
+      <div class="modal-heading">Fair Use</div>
+      <div class="modal-sub">This ecosystem is intentionally different. There are no algorithms and no distractions. By joining, you agree to uphold respect, its values, and edification. You also agree to use the app responsibly and not to engage in any activity that may disrupt its performance, compromise its security, or negatively affect other users' experience.</div>
+      <div class="modal-heading">Platform Conduct</div>
+      <div class="modal-highlight">DVPoll is built upon Christian values. We reserve the absolute right to suspend or terminate any rented instances or custom builds that are utilized to distribute malicious, illegal, or grossly offensive content.</div>
+      <div class="modal-heading">Access Control</div>
+      <div class="modal-sub">To maintain a stable and secure environment, we reserve the right to restrict, suspend, or terminate access to the App at our sole discretion, particularly in cases of misuse or violation of these Terms.</div>
+      <div class="modal-heading">Proper Conduct</div>
+      <div class="modal-sub">You agree not to attempt unauthorized access to any part of the App or its systems. You agree not to interfere with the App's operation, security, or performance. You agree not to clone, reproduce, decompile, or attempt to derive the App's underlying source code or structure. You agree not to use the App for any unlawful purpose. Any violation of these terms may result in an immediate and permanent ban.</div>
+      <div class="modal-heading">Disclaimer of Warranties</div>
+      <div class="modal-sub">The App is provided "as is" and "as available," without any warranties of any kind, express or implied. While we strive for reliability, we do not guarantee uninterrupted or disruption free service. You use the App at your own discretion.</div>
+      <div class="modal-heading">Limitation of Liability</div>
+      <div class="modal-sub">To the fullest extent permitted by law, the Developer is not liable for any direct or indirect consequences resulting from the use of the App.</div>
+      <div class="modal-heading">Governing Law</div>
+      <div class="modal-sub">These Terms are governed by the laws of the Federal Republic of Nigeria, specifically those of Akwa Ibom State. Any disputes arising from these Terms or your use of the App shall be resolved in the courts of Nigeria. Notwithstanding the foregoing, the Developer reserves the exclusive right to take legal action against any individual or entity engaging in unauthorized or unlawful activities in violation of these Terms in their country of origin or residence, where applicable.</div>
+      <div class="modal-heading">Age Restriction</div>
+      <div class="modal-sub">By using DVPoll, you confirm that you are at least 18 years of age. If you are under 18, you confirm that you have obtained parental or guardian consent to use the App in accordance with the laws of your jurisdiction.</div>
+      <div class="modal-section-title mt16">Privacy Policy</div>
+      <div class="modal-heading">Information Collection</div>
+      <div class="modal-sub">We do not store or transmit your log data to external servers. To help DVPoll run smoothly, securely, and efficiently, we may automatically collect limited technical information from connected devices. This includes app performance metrics such as load times and crash reports, session usage, logged metrics, analytical data, and session activity. This information is used solely to maintain, analyze, and improve the App experience and its reach. It may also be used in aggregated or anonymized form to support app development and enhancements.</div>
+      <div class="modal-heading">Divine Inspiration &amp; Global Reach</div>
+      <div class="modal-sub">The platform operates under divine inspiration and aims to serve millions globally. We reserve the right to update these terms at any time to better serve our community and align with global digital standards.</div>
+      <div class="modal-heading">Changes to This Policy</div>
+      <div class="modal-sub">This Privacy Policy may be updated as the App improves or as legal requirements change. Continued use of the App after updates constitutes acceptance of the revised policy.</div>
+      <div class="modal-heading">Contact Information</div>
+      <div class="modal-sub">For questions, concerns, or inquiries regarding these Terms, you may contact:</div>
+      <div class="modal-cta-row" style="margin-bottom:40px;">
+        <button class="cta-btn primary" onclick="ctaEmail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Contact Us</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT DEVELOPER -->
+<div class="modal-overlay" id="aboutDevModal">
+  <div class="modal-sheet">
+    <div class="modal-top"><span class="modal-top-title" style="color:#fff;">About Developer</span>
+      <button class="modal-close" onclick="closeModal('aboutDevModal')" style="color:#fff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" style="padding-bottom:32px;">
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;">
+        <div style="width:110px;height:110px;border-radius:50%;border:3px solid var(--gold);padding:3px;margin-bottom:16px;">
+          <img src="https://i.ibb.co/84dRKY60/Screenshot-20260103-005841.png" alt="Rev. Dr. Don Victor" style="width:100%;height:100%;border-radius:50%;object-fit:cover;background:#f4f4f5;">
+        </div>
+        <div style="text-align:center;">
+          <div class="dev-name" style="font-size:20px;font-weight:800;margin-bottom:4px;">Rev. Dr. Don Victor, PhD</div>
+          <div class="dev-role" style="font-size:16px;font-weight:600;">Theologian | Scholar | Trainer | Software Architect</div>
+        </div>
+      </div>
+      <div class="stat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px;">
+        <div class="stat-item" style="text-align:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--royal)" stroke-width="2.5" width="26" height="26"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <div class="stat-num" style="color:var(--gold);">100+</div>
+          <div class="stat-label" style="color:var(--royal);">Apps Built</div>
+          <div class="stat-sub" style="color:var(--text-main);">Across 15+ Frameworks</div>
+        </div>
+        <div class="stat-item" style="text-align:center;border-left:1.5px solid var(--border);border-right:1.5px solid var(--border);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" width="26" height="26"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <div class="stat-num" style="color:var(--gold);">25+</div>
+          <div class="stat-label" style="color:var(--royal);">Live Apps</div>
+          <div class="stat-sub" style="color:var(--text-main);">Global Digital Impact</div>
+        </div>
+        <div class="stat-item" style="text-align:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--royal)" stroke-width="2.5" width="26" height="26"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div class="stat-num" style="color:var(--gold);">100%</div>
+          <div class="stat-label" style="color:var(--royal);">Versatility</div>
+          <div class="stat-sub" style="color:var(--text-main);">Ministry &amp; Enterprise</div>
+        </div>
+        <div class="stat-item" style="text-align:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" width="26" height="26"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <div class="stat-num" style="color:var(--gold);">100%</div>
+          <div class="stat-label" style="color:var(--royal);">Servant of God</div>
+          <div class="stat-sub" style="color:var(--text-main);">Spreading Light &amp; Truth</div>
+        </div>
+        <div class="stat-item" style="text-align:center;border-left:1.5px solid var(--border);border-right:1.5px solid var(--border);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--royal)" stroke-width="2.5" width="26" height="26"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div class="stat-num" style="color:var(--gold);">Deep</div>
+          <div class="stat-label" style="color:var(--royal);">Researcher</div>
+          <div class="stat-sub" style="color:var(--text-main);">Bridging Faith &amp; Tech</div>
+        </div>
+        <div class="stat-item" style="text-align:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" width="26" height="26"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <div class="stat-num" style="color:var(--gold);">Word</div>
+          <div class="stat-label" style="color:var(--royal);">Theologian</div>
+          <div class="stat-sub" style="color:var(--text-main);">Exploring Eternal Depths</div>
+        </div>
+        <div class="stat-item" style="text-align:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--royal)" stroke-width="2.5" width="26" height="26"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <div class="stat-num" style="color:var(--gold);">Trusted</div>
+          <div class="stat-label" style="color:var(--royal);">Developer</div>
+          <div class="stat-sub" style="color:var(--text-main);">Advanced PWAs</div>
+        </div>
+        <div class="stat-item" style="text-align:center;border-left:1.5px solid var(--border);border-right:1.5px solid var(--border);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" width="26" height="26"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          <div class="stat-num" style="color:var(--gold);">Secure</div>
+          <div class="stat-label" style="color:var(--royal);">Architect</div>
+          <div class="stat-sub" style="color:var(--text-main);">Scalable Ecosystems</div>
+        </div>
+        <div class="stat-item" style="text-align:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--royal)" stroke-width="2.5" width="26" height="26"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <div class="stat-num" style="color:var(--gold);">Global</div>
+          <div class="stat-label" style="color:var(--royal);">Missionary</div>
+          <div class="stat-sub" style="color:var(--text-main);">Reaching 6000000 Souls</div>
+        </div>
+      </div>
+      <!--'  DEV BIO TEXT SIZE -->
+      <div id="devBioText" style="font-size:18px;line-height:1.6;color:var(--text-main);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:7;overflow:hidden;margin-bottom:8px;">Dr. Don Victor is a Reverend Minister of Jesus Christ. His core mission is deeply anchored in the Word of God, spreading light and absolute truth through digital innovation. He is a multifaceted and esteemed scholar, researcher, theologian, and dedicated trainer, holding a PhD in CED. He has devoted his life to empowering and equipping believers, as well as winning souls for the Lord. His expertise lies in engineering secure and scalable ecosystems with full cross sector versatility, seamlessly serving both ministry and enterprise needs. Beyond his impactful work in soul winning and academia, Dr. Don Victor is also a full stack developer and visionary software architect. He has engineered over 100 robust applications and successfully deployed more than 25 live systems globally. By bridging deep theological insight with enterprise grade technology, Rev. Don Victor builds high performance tools that advance the Kingdom and shape the global digital landscape. Through the strategic use of modern infrastructure, he continues to reach and influence millions of souls worldwide.</div>
+      <div style="margin-bottom:32px;">
+        <!-- ↓ SHOW MORE BUTTON SIZE -->
+        <button id="devBioBtn" onclick="toggleDevBio()" style="background:transparent;border:none;color:#1877F2;font-size:18px;font-weight:800;cursor:pointer;padding:0;">Show More</button>
+      </div>
+      <div class="modal-section-title">Contact The Developer</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        <button class="cta-btn primary" onclick="window.open('mailto:developer@example.com')" style="flex-direction:column;height:auto;padding:12px 4px;font-size:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email</button>
+        <button class="cta-btn phone" onclick="window.open('tel:+1234567890')" style="flex-direction:column;height:auto;padding:12px 4px;font-size:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</button>
+        <button class="cta-btn green" onclick="window.open('https://wa.me/1234567890')" style="flex-direction:column;height:auto;padding:12px 4px;font-size:12px;"><svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/sw-source">
+self.addEventListener('install',e=>self.skipWaiting());
+self.addEventListener('activate',e=>e.waitUntil(clients.claim()));
+self.addEventListener('fetch',e=>{
+  if(e.request.url.includes('script.google.com'))return;
+  e.respondWith(caches.open('dvpoll-v1').then(c=>c.match(e.request).then(r=>r||fetch(e.request).then(resp=>{if(resp.status===200)c.put(e.request,resp.clone());return resp;}))).catch(()=>fetch(e.request)));
+});
+</script>
+
+<script>
+function toggleDevBio(){
+  var t=document.getElementById('devBioText'),b=document.getElementById('devBioBtn');
+  var exp=t.style.webkitLineClamp==='unset';
+  t.style.webkitLineClamp=exp?'7':'unset';
+  b.textContent=exp?'Show More':'Show Less';
+}
+</script>
+
+<script>
+(function(){"use strict";
+  var GAS_URL="https://script.google.com/macros/s/AKfycbyv3x-N41LpRwZrknfhVpccKGdz_Lcg0PKM6o41jN0uaAcKn1lFgR3IqQXhcS-sjuS9QA/exec";
+  var CONTACT_EMAIL="donvictorministry@gmail.com";
+  var CONTACT_PHONE="+2347035794649";
+  var CONTACT_WHATSAPP="2348086590253";
+  var CONTACT_FACEBOOK="https://facebook.com/Rev.DonVictor";
+
+  var mBlob=new Blob([JSON.stringify({name:"DVPoll",short_name:"DVPoll",description:"Anonymous Christian Polling Platform",start_url:"./",display:"standalone",theme_color:"#1A3A8F",background_color:"#B8860B",icons:[{src:"https://i.ibb.co/4Z2LF3Ws/Screenshot-20260423-145600.png/512/5968/5968883.png",sizes:"512x512",type:"image/png"}]})],{type:"application/json"});
+  var mLink=document.createElement("link");mLink.rel="manifest";mLink.href=URL.createObjectURL(mBlob);document.head.appendChild(mLink);
+  if('serviceWorker'in navigator){var sw=document.querySelector('script[type="text/sw-source"]').textContent;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(function(){});}
+
+  var pollData=null,selectedOption=null,hasVoted=false,starRating=0,hasRated=false,timerInterval=null,deferredPrompt=null,lectureExpanded=false;
+  var userId=localStorage.getItem("dvpoll_uid")||(function(){var u="U_"+Date.now()+"_"+Math.random().toString(36).substring(2,6);localStorage.setItem("dvpoll_uid",u);return u;})();
+
+  var db=null;
+  function initDB(){return new Promise(function(res){var r=indexedDB.open("dvpoll_cache",1);r.onupgradeneeded=function(e){e.target.result.createObjectStore("cache",{keyPath:"key"})};r.onsuccess=function(e){db=e.target.result;res()};r.onerror=function(){res()}});}
+  function dbGet(k){return new Promise(function(res){if(!db)return res(null);var r=db.transaction("cache","readonly").objectStore("cache").get(k);r.onsuccess=function(){var v=r.result;res(v&&Date.now()-v.ts<120000?v.value:null)};r.onerror=function(){res(null)}});}
+  function dbSet(k,v){if(!db)return;db.transaction("cache","readwrite").objectStore("cache").put({key:k,value:v,ts:Date.now()});}
+
+  function gasGet(p){return fetch(GAS_URL+"?"+new URLSearchParams(p).toString()).then(function(r){return r.json()});}
+  function gasPost(b){return fetch(GAS_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(b)}).then(function(r){return r.json()});}
+
+  function loadContent(){
+    dbGet("all_content").then(function(c){if(c)renderAll(c);});
+    gasGet({action:"getAll"}).then(function(d){if(d.success){dbSet("all_content",d);renderAll(d);}}).catch(function(){document.getElementById("pollContent").innerHTML='<div class="poll-loading" style="color:#B00020">Unable to load poll. Check connection.</div>';});
+  }
+  function renderAll(d){
+    if(d.poll){pollData=d.poll;hasVoted=!!localStorage.getItem("voted_"+pollData.pollId);hasRated=!!localStorage.getItem("rated_"+pollData.pollId);renderPoll();}
+    else renderNoPoll();
+    renderAnnouncement(d.announcement);
+    renderLecture(d.lecture);
+  }
+
+  function renderPoll(){
+    var p=pollData,vv=hasVoted,opts="";
+    p.options.forEach(function(opt,i){
+      var pct=p.totalVotes>0?Math.round(opt.votes/p.totalVotes*100):0;
+      var sel=selectedOption===i?"selected":"";
+      opts+='<div class="vote-option '+sel+'" onclick="selectOpt('+i+')"><div class="option-row"><div class="radio-ring"><div class="radio-dot"></div></div><span class="opt-text">'+esc(opt.text)+'</span><span class="opt-pct">'+pct+'%</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div></div>';
+    });
+    var starsFill='';
+    [1,2,3,4,5].forEach(function(n){
+      starsFill+='<button class="star-btn'+(starRating>=n?' lit':'')+'" onclick="setStarRating('+n+')" aria-label="'+n+' star'+(n>1?'s':'')+'"><svg viewBox="0 0 24 24" fill="'+(starRating>=n?'#F5C518':'none')+'" stroke="'+(starRating>=n?'#F5C518':'#AAAACC')+'" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>';
+    });
+    document.getElementById("pollContent").innerHTML=
+      '<div class="poll-question">'+esc(p.question)+'</div>'+
+      '<div class="countdown-block"><div class="countdown-lbl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>Poll closes in</div>'+
+      '<div class="timer-row"><div class="time-unit"><span class="time-num" id="tHours">--</span><div class="time-lbl">hours</div></div><span class="timer-sep">:</span><div class="time-unit"><span class="time-num" id="tMins">--</span><div class="time-lbl">mins</div></div><span class="timer-sep">:</span><div class="time-unit"><span class="time-num" id="tSecs">--</span><div class="time-lbl">secs</div></div></div>'+
+      '<div class="expiry-note" id="expiryNote"></div></div>'+
+      '<div class="options-list">'+opts+'</div>'+
+      '<button class="vote-btn" id="voteBtn" onclick="submitVote()" '+((!p.active||vv||selectedOption===null)?'disabled':'')+'>'+
+      '<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg>'+(vv?"Vote Recorded \u2713":!p.active?"Poll Closed":"Submit Vote")+'</button>'+
+      '<div class="poll-meta"><div class="votes-count"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span>'+p.totalVotes.toLocaleString()+'</span> votes</div>'+
+      '<div class="anon-chip"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Anonymous</div></div>'+
+      '<div class="star-rating-block"><div class="star-rating-label"><svg viewBox="0 0 24 24" fill="'+(hasRated?'#F5C518':'none')+'" stroke="'+(hasRated?'#F5C518':'#B8860B')+'" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Rate This Poll</div>'+
+      '<div class="stars-row" id="starsRow">'+starsFill+'</div>'+
+      '<button class="star-submit-btn" id="starBtn" onclick="submitStarRating()" '+(hasRated||starRating===0?'disabled':'')+'>'+( hasRated?'\u2605 Thank you!':'Submit Rating')+'</button>'+
+      '<div class="star-feedback" id="starFeedback">'+(hasRated?'\u2605'.repeat(starRating)+'\u2606'.repeat(5-starRating):'')+'</div></div>';
+    startTimer();
+  }
+
+  function renderNoPoll(){document.getElementById("pollContent").innerHTML='<div class="poll-loading" style="padding:40px 0;"><div style="font-size:48px;margin-bottom:12px">\uD83D\uDDF3\uFE0F</div><div>No active poll right now.<br>Check back soon!</div></div>';}
+
+  window.selectOpt=function(i){if(hasVoted||!pollData||!pollData.active)return;selectedOption=i;renderPoll();};
+
+  window.submitVote=function(){
+    if(hasVoted||selectedOption===null||!pollData||!pollData.active)return;
+    var btn=document.getElementById("voteBtn");
+    btn.disabled=true;btn.innerHTML='<span class="btn-spinner"></span> Submitting\u2026';
+    gasPost({action:"submitVote",pollId:pollData.pollId,optionIndex:selectedOption,userId:userId,userAgent:navigator.userAgent})
+    .then(function(r){
+      if(r.success){
+        hasVoted=true;
+        localStorage.setItem("voted_"+pollData.pollId,"true");
+        pollData.options[selectedOption].votes+=1;
+        pollData.totalVotes+=1;
+        showToast("\u2713 Your vote has been recorded!");
+        renderPoll();
+      } else {
+        showToast(r.error||"Vote failed. Try again.");
+        btn.disabled=false;
+        btn.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg> Submit Vote';
+      }
+    }).catch(function(){
+      showToast("Connection error. Please retry.");
+      btn.disabled=false;
+      btn.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg> Submit Vote';
+    });
+  };
+
+  function startTimer(){if(timerInterval)clearInterval(timerInterval);timerInterval=setInterval(tick,500);tick();}
+  function tick(){
+    if(!pollData)return;
+    var diff=pollData.expiryTimestamp-Date.now();
+    var h=document.getElementById("tHours"),m=document.getElementById("tMins"),s=document.getElementById("tSecs"),n=document.getElementById("expiryNote");
+    if(!h)return;
+    if(diff<=0){h.textContent="00";m.textContent="00";s.textContent="00";if(n)n.textContent="Poll has ended";pollData.active=false;clearInterval(timerInterval);var b=document.getElementById("voteBtn");if(b){b.disabled=true;b.textContent="Poll Closed";}return;}
+    var hrs=Math.floor(diff/3600000),mins=Math.floor(diff%3600000/60000),secs=Math.floor(diff%60000/1000);
+    h.textContent=String(hrs).padStart(2,"0");m.textContent=String(mins).padStart(2,"0");s.textContent=String(secs).padStart(2,"0");
+    if(n){if(hrs>0)n.textContent="Closes in "+hrs+"h "+mins+"m";else if(mins>10)n.textContent=mins+" minutes remaining";else if(mins>0)n.textContent="Only "+mins+"m "+secs+"s left!";else n.textContent="Final seconds!";}
+  }
+
+  function renderAnnouncement(a){
+    var el=document.getElementById("announceContent");
+    if(!a){el.innerHTML='<div class="announce-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><div class="announce-title">No Active Announcement</div><div class="announce-text">There are no announcements at this time.<br>Check back later.</div>';return;}
+    var type=a.type==="Maintenance"?"🔧 Maintenance Notice":"📢 Announcement";
+    el.style.background=a.bgColor||"transparent";
+    el.innerHTML='<div class="announce-icon"><svg viewBox="0 0 24 24" fill="'+(a.textColor||'currentColor')+'" width="64" height="64"><path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><div class="announce-title" style="color:'+(a.textColor||'')+'">'+type+'</div><div class="announce-text" style="color:'+(a.textColor||'')+'">'+esc(a.messageText)+'</div>';
+  }
+
+  function renderLecture(l){
+    var el=document.getElementById("lectureContent");
+    if(!l){el.innerHTML='<div class="lecture-card"><div class="poll-loading" style="padding:40px 0;"><div style="font-size:40px;margin-bottom:12px">\uD83D\uDCD6</div><div>No lecture published yet.</div></div></div>';return;}
+    el.innerHTML='<div class="lecture-card" style="background:'+(l.bgColor||'')+'"><div class="lecture-title" style="color:'+(l.titleColor||'')+'">'+esc(l.title)+'</div><div class="lecture-by" style="color:'+(l.writtenByColor||'')+'">By '+esc(l.writtenBy)+'</div><div class="lecture-body '+(lectureExpanded?'':'clamped')+'" id="lectureBody" style="color:'+(l.messageTextColor||'')+'">'+esc(l.messageText).replace(/\n/g,'<br>')+'</div><button class="show-more-btn" onclick="toggleLecture()">'+(lectureExpanded?"Show less \u25b2":"Show more \u25bc")+'</button></div>';
+  }
+  window.toggleLecture=function(){lectureExpanded=!lectureExpanded;var b=document.getElementById("lectureBody"),btn=b?b.nextElementSibling:null;if(b)b.classList.toggle("clamped",!lectureExpanded);if(btn)btn.textContent=lectureExpanded?"Show less \u25b2":"Show more \u25bc";};
+
+  window.setStarRating=function(n){
+    if(hasRated)return;starRating=n;
+    var row=document.getElementById("starsRow");if(!row)return;
+    var h='';[1,2,3,4,5].forEach(function(i){h+='<button class="star-btn'+(starRating>=i?' lit':'')+'" onclick="setStarRating('+i+')" aria-label="'+i+' star'+(i>1?'s':'')+'"><svg viewBox="0 0 24 24" fill="'+(starRating>=i?'#F5C518':'none')+'" stroke="'+(starRating>=i?'#F5C518':'#AAAACC')+'" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>';});
+    row.innerHTML=h;var b=document.getElementById("starBtn");if(b)b.disabled=false;
+  };
+  window.submitStarRating=function(){
+    if(hasRated||starRating===0||!pollData)return;
+    var btn=document.getElementById("starBtn");if(btn){btn.disabled=true;btn.innerHTML='<span class="btn-spinner"></span>';}
+    gasPost({action:"submitStarRating",pollId:pollData.pollId,rating:starRating,userId:userId})
+    .then(function(){
+      hasRated=true;
+      localStorage.setItem("rated_"+pollData.pollId,"true");
+      var fb=document.getElementById("starFeedback");
+      if(fb)fb.textContent="You rated: "+"\u2605".repeat(starRating)+"\u2606".repeat(5-starRating);
+      if(btn){btn.innerHTML="\u2605 Thank you!";btn.disabled=true;}
+      showToast("\u2b50 Rating submitted \u2014 thank you!");
+    }).catch(function(){showToast("Rating failed. Try again.");if(btn){btn.disabled=false;btn.innerHTML="Submit Rating";}});
+  };
+
+  window.switchTab=function(t){document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active")});document.querySelectorAll(".screen-tab").forEach(function(s){s.classList.remove("active")});document.getElementById("screen-"+t).classList.add("active");document.getElementById("tab-"+t).classList.add("active");};
+  window.openSidebar=function(){document.getElementById("sidebar").classList.add("open");document.getElementById("sidebarOverlay").classList.add("open");document.body.style.overflow="hidden";};
+  window.closeSidebar=function(){document.getElementById("sidebar").classList.remove("open");document.getElementById("sidebarOverlay").classList.remove("open");document.body.style.overflow="";};
+  window.openModal=function(id){var el=document.getElementById(id);if(el){el.style.display="flex";document.body.style.overflow="hidden";}};
+  window.closeModal=function(id){var el=document.getElementById(id);if(el){el.style.display="none";document.body.style.overflow="";}};
+  document.querySelectorAll(".modal-overlay").forEach(function(el){el.addEventListener("click",function(e){if(e.target===el)closeModal(el.id);});});
+
+  window.toggleTheme=function(){var dark=document.documentElement.getAttribute("data-theme")!=="dark";document.documentElement.setAttribute("data-theme",dark?"dark":"light");document.getElementById("themeLabel").textContent=dark?"Dark Mode":"Light Mode";document.getElementById("themeToggle").classList.toggle("on",dark);localStorage.setItem("dvpoll_theme",dark?"dark":"light");};
+  if(localStorage.getItem("dvpoll_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");document.getElementById("themeLabel").textContent="Dark Mode";document.getElementById("themeToggle").classList.add("on");}
+
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;});
+  window.triggerInstall=function(){if(!deferredPrompt){showToast("App already installed");return;}deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;});};
+
+  window.sharePoll=function(){var url=window.location.href,txt=pollData?pollData.question:"Check out this Christian poll!";if(navigator.share){navigator.share({title:"DVPoll",text:txt,url:url}).catch(function(){copyUrl(url);});}else copyUrl(url);};
+  function copyUrl(u){if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){showToast("Link copied!");}).catch(function(){showToast("Share: "+u);});else showToast("Share: "+u);}
+
+  window.ctaEmail=function(){window.open("mailto:"+CONTACT_EMAIL);};
+  window.ctaPhone=function(){window.open("tel:"+CONTACT_PHONE);};
+  window.ctaWhatsApp=function(){window.open("https://wa.me/"+CONTACT_WHATSAPP.replace(/\D/g,""));};
+  window.ctaFacebook=function(){window.open(CONTACT_FACEBOOK);};
+
+  var toastT;
+  window.showToast=function(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show");},2500);};
+
+  function esc(s){var d=document.createElement("div");d.textContent=String(s||"");return d.innerHTML;}
+
+  function fetchIpData(){
+    var dt=/Mobile|Android|iPhone/i.test(navigator.userAgent)?"Mobile":"Desktop";
+    return fetch("https://ipapi.co/json/").then(function(r){return r.json();}).then(function(d){if(!d.error)return{ip:d.ip||"",country:d.country_name||"",city:d.city||"",isp:d.org||"",mobileNet:d.org||"",deviceType:dt};throw 0;})
+    .catch(function(){return fetch("https://ipwho.is/").then(function(r){return r.json();}).then(function(d){if(d.success)return{ip:d.ip||"",country:d.country||"",city:d.city||"",isp:(d.connection&&d.connection.isp)||"",mobileNet:(d.connection&&d.connection.isp)||"",deviceType:dt};throw 0;});})
+    .catch(function(){return fetch("https://api.bigdatacloud.net/data/client-ip").then(function(r){return r.json();}).then(function(d){return{ip:d.ipString||"",country:(d.country&&d.country.name)||"",city:(d.location&&d.location.city)||"",isp:"",mobileNet:"",deviceType:dt};});})
+    .catch(function(){return{ip:"",country:"",city:"",isp:"",mobileNet:"",deviceType:dt};});
+  }
+
+  var writerEmail=null,writerPwd=null;
+  window.doWriterLogin=function(){
+    var em=document.getElementById("wEmail").value.trim(),pw=document.getElementById("wPass").value;
+    var err=document.getElementById("wLoginErr"),btn=document.getElementById("wLoginBtn");
+    if(!em||!pw){err.textContent="Please enter email and password.";err.classList.remove("hidden");return;}
+    btn.textContent="Authenticating\u2026";btn.disabled=true;err.classList.add("hidden");
+    fetchIpData().then(function(geo){
+      return gasPost(Object.assign({action:"writerLogin",writerEmail:em,writerPassword:pw,userAgent:navigator.userAgent},geo));
+    }).then(function(r){
+      if(r.success){writerEmail=em;writerPwd=pw;document.getElementById("writerLoginBox").style.display="none";document.getElementById("writerDashBox").style.display="flex";showToast("Welcome! You are logged in.");}
+      else{err.textContent=r.error||"Network error. Connection timed out.";err.classList.remove("hidden");}
+    }).catch(function(){err.textContent="Network error. Connection timed out.";err.classList.remove("hidden");})
+    .finally(function(){btn.textContent="Sign In";btn.disabled=false;});
+  };
+  window.wSubmitPoll=function(){
+    var q=document.getElementById("wQ").value.trim();
+    var opts=[document.getElementById("wO1").value.trim(),document.getElementById("wO2").value.trim(),document.getElementById("wO3").value.trim(),document.getElementById("wO4").value.trim()].filter(Boolean);
+    if(!q||opts.length<2){showToast("Question and at least 2 options required");return;}
+    var btn=document.getElementById("wSubmitBtn");
+    btn.innerHTML='<span class="btn-spinner" style="width:20px;height:20px;border:3px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;"></span> Publishing\u2026';btn.disabled=true;
+    gasPost({action:"writerCreatePoll",writerEmail:writerEmail,writerPassword:writerPwd,question:q,options:opts,days:+(document.getElementById("wDays").value)||0,hours:+(document.getElementById("wHours").value)||0,minutes:0,seconds:0})
+    .then(function(r){
+      if(r.success){
+        var banner=document.getElementById("wSuccessBanner");
+        banner.innerHTML="\u2705 Poll Published!<br><span style='font-weight:400;font-size:13px;'>\""+esc(q)+"\"</span>";
+        banner.classList.remove("hidden");setTimeout(function(){banner.classList.add("hidden");},7000);
+        showToast("Poll published successfully!");
+        ["wQ","wO1","wO2","wO3","wO4"].forEach(function(id){document.getElementById(id).value="";});
+        document.getElementById("wDays").value="3";document.getElementById("wHours").value="0";
+      } else showToast(r.error||"Network error. Connection timed out.");
+    }).catch(function(){showToast("Network error. Connection timed out.");})
+    .finally(function(){btn.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9 2h6v8h5L12 22 4 10h5V2z"/></svg> Publish Live Poll';btn.disabled=false;});
+  };
+
+  initDB().then(function(){
+    var isWriter=new URLSearchParams(window.location.search).get('portal')==='writer';
+    if(isWriter){document.getElementById("publicAppWrap").style.display="none";document.getElementById("writerPortalWrap").style.display="flex";return;}
+    loadContent();
+    fetchIpData().then(function(g){
+      gasPost({action:"trackVisit",userId:userId,userAgent:navigator.userAgent,ip:g.ip||"",country:g.country||"",city:g.city||"",isp:g.isp||"",mobileNet:g.mobileNet||"",deviceType:g.deviceType||"Unknown"}).catch(function(){});
+    });
+  });
+})();
+</script>
+</body>
+</html>
